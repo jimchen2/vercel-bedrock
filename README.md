@@ -1,4 +1,18 @@
-Example
+## Install
+
+```
+# configure .env
+docker run -d --restart always --env-file .env -p 3025:3000 jimchen2/vercel-bedrock:latest
+```
+
+## Build
+
+```
+# add Dockerfile
+docker build --no-cache -t jimchen2/vercel-bedrock .
+```
+
+## Previous Example
 
 
 ```
