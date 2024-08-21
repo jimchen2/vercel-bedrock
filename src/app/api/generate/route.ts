@@ -4,11 +4,17 @@ import { streamText } from "ai";
 import { google } from "@ai-sdk/google";
 import { openai } from "@ai-sdk/openai";
 
-export const runtime = "edge";
+const API_KEY = process.env.API_KEY;
 
 export async function POST(request: Request) {
   try {
-    const { messages, model = "bedrock", modelName = "anthropic.claude-3-haiku-20240307-v1:0", system, maxTokens, temperature, topP, presencePenalty, frequencyPenalty } = await request.json();
+    // Check for API key in the request headers
+    const authHeader = request.headers.get("Authorization");
+    if (!authHeader || authHeader !== `Bearer ${API_KEY}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { messages, model = "bedrock", modelName = "anthropic.claude-3-haiku-20240307-v1:0", system, maxTokens, temperature, topP, topK, presencePenalty, frequencyPenalty } = await request.json();
 
     let selectedModel;
 
@@ -31,6 +37,7 @@ export async function POST(request: Request) {
     if (maxTokens) streamOptions.maxTokens = maxTokens;
     if (temperature !== undefined) streamOptions.temperature = temperature;
     if (topP !== undefined) streamOptions.topP = topP;
+    if (topK !== undefined) streamOptions.topK = topK;
     if (presencePenalty !== undefined) streamOptions.presencePenalty = presencePenalty;
     if (frequencyPenalty !== undefined) streamOptions.frequencyPenalty = frequencyPenalty;
 
