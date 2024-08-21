@@ -26,15 +26,15 @@ interface ConfigPanelProps {
 }
 
 const defaultConfig = {
-  selectedModel: "",
+  selectedModel: "anthropic.claude-3-haiku-20240307-v1:0",
   system: "",
   maxTokens: 2048,
   temperature: 0.7,
-  topP: 1,
+  topP: 0.9,
   topK: 40,
-  presencePenalty: 0,
-  frequencyPenalty: 0,
-  maxInputCharacters: 4000,
+  presencePenalty: 0.5,
+  frequencyPenalty: 0.5,
+  maxInputCharacters: 20000,
 };
 
 const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
