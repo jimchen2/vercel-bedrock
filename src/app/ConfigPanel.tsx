@@ -1,4 +1,4 @@
-// src/components/ConfigPanel.tsx
+// ConfigPanel.tsx
 import React, { useState, useEffect } from "react";
 import { modelConfigs } from "../../modelConfigs";
 import { login } from "./auth";
@@ -74,10 +74,10 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
         frequencyPenalty: props.frequencyPenalty,
         maxInputCharacters: props.maxInputCharacters,
       };
-      Cookies.set("userConfig", JSON.stringify(currentConfig), { 
+      Cookies.set("userConfig", JSON.stringify(currentConfig), {
         expires: 365,
-        sameSite: 'Strict',
-        secure: window.location.protocol === 'https:'
+        sameSite: "Strict",
+        secure: window.location.protocol === "https:",
       });
     }
   }, [isInitialized, props]);
@@ -104,19 +104,18 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
   };
 
   const renderInput = (label: string, value: number, setter: (value: number) => void, type = "number", step = "0.1", min = "0", max = "1") => (
-    <div className="mb-1">
-      <label className="text-md text-normal block">{label}</label>
-      <input type={type} value={value} onChange={(e) => setter(Number(e.target.value))} step={step} min={min} max={max} className="w-full p-0.5 border rounded text-md bg-gray-50" />
+    <div className="mb-4">
+      <label className="text-md text-normal block mb-2">{label}</label>
+      <input type={type} value={value} onChange={(e) => setter(Number(e.target.value))} step={step} min={min} max={max} className="w-full p-2 border rounded text-md bg-gray-50" />
     </div>
   );
 
   return (
-    <div className="w-1/6 p-1 bg-gray-100 overflow-y-auto text-md">
-      <h2 className="text-md font-bold mb-1">Config</h2>
-      <div className="space-y-1">
-        <div>
-          <label className="text-md text-normal block">Model</label>
-          <select value={props.selectedModel} onChange={(e) => props.setSelectedModel(e.target.value)} className="w-full p-0.5 border rounded text-sm bg-gray-50">
+    <div className="config-panel p-6 bg-white shadow-md rounded-lg">
+      <div className="space-y-4">
+        <div className="mb-4">
+          <label className="text-md text-normal block mb-2">Model</label>
+          <select value={props.selectedModel} onChange={(e) => props.setSelectedModel(e.target.value)} className="w-full p-2 border rounded text-sm bg-gray-50">
             {Object.keys(modelConfigs).map((modelName) => (
               <option key={modelName} value={modelName}>
                 {modelName}
@@ -124,9 +123,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
             ))}
           </select>
         </div>
-        <div>
-          <label className="text-md text-normal block">System</label>
-          <textarea value={props.system} onChange={(e) => props.setSystem(e.target.value)} className="w-full p-0.5 border rounded text-md bg-gray-50" rows={2} />
+        <div className="mb-4">
+          <label className="text-md text-normal block mb-2">System</label>
+          <textarea value={props.system} onChange={(e) => props.setSystem(e.target.value)} className="w-full p-2 border rounded text-md bg-gray-50" rows={3} />
         </div>
         {renderInput("Max Tokens", props.maxTokens, props.setMaxTokens, "number", "1", "1")}
         {renderInput("Temperature", props.temperature, props.setTemperature)}
@@ -135,21 +134,21 @@ const ConfigPanel: React.FC<ConfigPanelProps> = (props) => {
         {renderInput("Presence Penalty", props.presencePenalty, props.setPresencePenalty, "number", "0.1", "-2", "2")}
         {renderInput("Freq Penalty", props.frequencyPenalty, props.setFrequencyPenalty, "number", "0.1", "-2", "2")}
         {renderInput("Max Input Characters", props.maxInputCharacters, props.setMaxInputCharacters, "number", "1", "1")}
-        <div>
-          <button onClick={() => setShowApiKeyInput(!showApiKeyInput)} className="w-full p-0.5 bg-gray-300 text-gray-800 rounded text-md hover:bg-gray-400">
+        <div className="mb-4">
+          <button onClick={() => setShowApiKeyInput(!showApiKeyInput)} className="w-full p-2 bg-gray-300 text-gray-800 rounded text-md hover:bg-gray-400">
             {showApiKeyInput ? "Hide Key" : "Set Key"}
           </button>
           {showApiKeyInput && (
-            <div className="mt-1">
-              <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" className="w-full p-0.5 border rounded text-md bg-gray-50" />
-              <button onClick={handleSetApiKey} className="w-full mt-1 p-0.5 bg-gray-300 text-gray-800 rounded text-md hover:bg-gray-400">
+            <div className="mt-2">
+              <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="API Key" className="w-full p-2 border rounded text-md bg-gray-50" />
+              <button onClick={handleSetApiKey} className="w-full mt-2 p-2 bg-gray-300 text-gray-800 rounded text-md hover:bg-gray-400">
                 Save Key
               </button>
             </div>
           )}
         </div>
         <div>
-          <button onClick={resetToDefaults} className="w-full p-0.5 bg-gray-300 text-gray-800 rounded text-md hover:bg-gray-400">
+          <button onClick={resetToDefaults} className="w-full p-2 bg-gray-300 text-gray-800 rounded text-md hover:bg-gray-400">
             Reset to Defaults
           </button>
         </div>
