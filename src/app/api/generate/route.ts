@@ -1,34 +1,28 @@
-import { NextResponse } from 'next/server';
-import { bedrock } from '@ai-sdk/amazon-bedrock';
-import { streamText } from 'ai';
-import { google } from '@ai-sdk/google';
+import { NextResponse } from "next/server";
+import { bedrock } from "@ai-sdk/amazon-bedrock";
+import { streamText } from "ai";
+import { google } from "@ai-sdk/google";
+import { openai } from "@ai-sdk/openai";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export async function POST(request: Request) {
   try {
-    const {
-      messages,
-      model = 'bedrock',
-      modelName = 'anthropic.claude-3-haiku-20240307-v1:0',
-      system,
-      maxTokens,
-      temperature,
-      topP,
-      presencePenalty,
-      frequencyPenalty,
-    } = await request.json();
+    const { messages, model = "bedrock", modelName = "anthropic.claude-3-haiku-20240307-v1:0", system, maxTokens, temperature, topP, presencePenalty, frequencyPenalty } = await request.json();
 
     let selectedModel;
 
-    if (model === 'bedrock') {
+    if (model === "bedrock") {
       selectedModel = bedrock(modelName);
-    } else if (model === 'google') {
+    } else if (model === "google") {
       selectedModel = google(modelName);
+    } else if (model === "openai") {
+      selectedModel = openai(modelName);
     } else {
-      throw new Error('Unsupported model provider');
+      throw new Error("Unsupported model provider");
     }
-        const streamOptions: any = {
+
+    const streamOptions: any = {
       model: selectedModel,
       messages,
     };
@@ -56,13 +50,13 @@ export async function POST(request: Request) {
 
     return new NextResponse(stream, {
       headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache, no-transform',
-        'Connection': 'keep-alive',
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
       },
     });
   } catch (error) {
-    console.error('Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

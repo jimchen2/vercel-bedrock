@@ -22,4 +22,10 @@ export const modelConfigs = {
   "gemini-1.5-pro": {
     provider: "google",
   },
+  "chatgpt-4o-latest": {
+    provider: "openai",
+  },
+  "gpt-4o-mini": {
+    provider: "openai",
+  },
 };
