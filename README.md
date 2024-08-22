@@ -1,3 +1,5 @@
+*Tauri App not ready*
+
 ## Install
 
 ```
