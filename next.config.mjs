@@ -14,6 +14,10 @@ const nextConfig = withPWA({
   },
   swcMinify: true,
   poweredByHeader: false,
+  output: 'export', // Add this line for Tauri static export
+  images: {
+    unoptimized: true, // Add this line if you're using Next.js Image component
+  },
 });
 
 export default nextConfig;

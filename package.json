@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tauri": "tauri",
+    "build-tauri": "next build && tauri build"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^0.0.17",
@@ -21,6 +23,7 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1.6.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
