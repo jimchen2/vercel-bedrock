@@ -41,7 +41,9 @@ export async function POST(request: Request) {
     if (presencePenalty !== undefined) streamOptions.presencePenalty = presencePenalty;
     if (frequencyPenalty !== undefined) streamOptions.frequencyPenalty = frequencyPenalty;
 
+    console.log(streamOptions)
     const result = await streamText(streamOptions);
+    
 
     const stream = new ReadableStream({
       async start(controller) {

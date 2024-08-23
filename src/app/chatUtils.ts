@@ -15,18 +15,16 @@ const truncateMessages = (messages: Message[], maxInputCharacters: number): Mess
     const message = messages[i];
     const messageChars = message.content.length;
 
-    if (totalChars + messageChars > maxInputCharacters) {
-      break;
-    }
-
-    truncatedMessages.unshift(message);
-    totalChars += messageChars;
-
-    if (message.role === "user" && truncatedMessages.length > 1) {
+    if (totalChars + messageChars <= maxInputCharacters) {
+      truncatedMessages.unshift(message);
+      totalChars += messageChars;
+    } else {
+      // If adding this message would exceed the limit, stop here
       break;
     }
   }
 
+  // Ensure the first message is from the user
   while (truncatedMessages.length > 0 && truncatedMessages[0].role !== "user") {
     truncatedMessages.shift();
   }
@@ -34,6 +32,7 @@ const truncateMessages = (messages: Message[], maxInputCharacters: number): Mess
   return truncatedMessages;
 };
 
+// The rest of the file remains the same
 export const handleSubmit = async (
   e: React.FormEvent,
   {
