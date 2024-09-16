@@ -32,6 +32,7 @@ export async function POST(request: Request) {
       model: selectedModel,
       messages,
     };
+    console.log(streamOptions)
 
     if (system) streamOptions.system = system;
     if (maxTokens) streamOptions.maxTokens = maxTokens;
@@ -41,9 +42,7 @@ export async function POST(request: Request) {
     if (presencePenalty !== undefined) streamOptions.presencePenalty = presencePenalty;
     if (frequencyPenalty !== undefined) streamOptions.frequencyPenalty = frequencyPenalty;
 
-    console.log(streamOptions)
     const result = await streamText(streamOptions);
-    
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -66,6 +65,6 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
   }
 }

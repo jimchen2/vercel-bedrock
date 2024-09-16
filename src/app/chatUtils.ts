@@ -1,38 +1,27 @@
 // src/components/chatUtils.ts
 import { modelConfigs } from "../../modelConfigs";
-import { getApiKey } from './auth';
+import { getApiKey } from "./auth";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-const truncateMessages = (messages: Message[], maxInputCharacters: number): Message[] => {
+const truncateMessages = (messages: Message[], maxChars: number): Message[] => {
   let totalChars = 0;
-  const truncatedMessages: Message[] = [];
-
-  for (let i = messages.length - 1; i >= 0; i--) {
-    const message = messages[i];
-    const messageChars = message.content.length;
-
-    if (totalChars + messageChars <= maxInputCharacters) {
-      truncatedMessages.unshift(message);
-      totalChars += messageChars;
-    } else {
-      // If adding this message would exceed the limit, stop here
-      break;
-    }
-  }
-
-  // Ensure the first message is from the user
-  while (truncatedMessages.length > 0 && truncatedMessages[0].role !== "user") {
-    truncatedMessages.shift();
-  }
-
-  return truncatedMessages;
+  return messages
+    .reverse()
+    .filter((msg) => {
+      if (totalChars + msg.content.length <= maxChars) {
+        totalChars += msg.content.length;
+        return true;
+      }
+      return false;
+    })
+    .reverse()
+    .filter((_, i, arr) => (i === 0 ? arr[i].role === "user" : true));
 };
 
-// The rest of the file remains the same
 export const handleSubmit = async (
   e: React.FormEvent,
   {
@@ -77,18 +66,12 @@ export const handleSubmit = async (
   setIsLoading(true);
   setError(null);
 
-  const userMessage: Message = { role: "user", content: input };
-  const updatedMessages = [...messages, userMessage];
+  const updatedMessages = [...messages, { role: "user", content: input }];
   setMessages(updatedMessages);
   setInput("");
   setCurrentAssistantMessage("");
 
-  const modelConfig = modelConfigs[selectedModel];
-  const truncatedMessages = truncateMessages(updatedMessages, maxInputCharacters);
-
-  // Get the API key using the getApiKey function
   const apiKey = getApiKey();
-
   if (!apiKey) {
     setError("API key not found. Please set the API key in the configuration panel.");
     setIsLoading(false);
@@ -100,11 +83,11 @@ export const handleSubmit = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        messages: truncatedMessages,
-        model: modelConfig.provider,
+        messages: truncateMessages(updatedMessages, maxInputCharacters),
+        model: modelConfigs[selectedModel].provider,
         modelName: selectedModel,
         system,
         maxTokens,
@@ -116,35 +99,26 @@ export const handleSubmit = async (
       }),
     });
 
-    if (response.status === 401) {
-      setError("Unauthorized. Please check your API key.");
-      setIsLoading(false);
-      return;
-    }
-
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(response.status === 401 ? "Unauthorized. Please check your API key." : await response.text());
     }
 
     const reader = response.body?.getReader();
-    if (!reader) {
-      throw new Error("Response body is not readable");
-    }
+    if (!reader) throw new Error("Response body is not readable");
 
     let assistantMessage = "";
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      const chunk = new TextDecoder().decode(value);
-      assistantMessage += chunk;
+      assistantMessage += new TextDecoder().decode(value);
       setCurrentAssistantMessage(assistantMessage);
     }
 
-    setMessages((prevMessages) => [...prevMessages, { role: "assistant", content: assistantMessage }]);
+    setMessages((prev) => [...prev, { role: "assistant", content: assistantMessage }]);
     setCurrentAssistantMessage("");
   } catch (err) {
-    console.error("Error:", err);
-    setError(err instanceof Error ? err.message : "An error occurred");
+    console.error("Error in handleSubmit:", err);
+    setError(err instanceof Error ? err.message : String(err));
   } finally {
     setIsLoading(false);
   }

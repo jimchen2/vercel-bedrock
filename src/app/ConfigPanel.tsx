@@ -26,7 +26,7 @@ interface ConfigPanelProps {
 }
 
 const defaultConfig = {
-  selectedModel: "anthropic.claude-3-haiku-20240307-v1:0",
+  selectedModel: "anthropic.claude-3-5-sonnet-20240620-v1:0",
   system: "",
   maxTokens: 2048,
   temperature: 0.7,

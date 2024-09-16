@@ -1,5 +1,3 @@
-*Tauri App not ready*
-
 ## Install
 
 ```
@@ -20,11 +18,6 @@ docker build --no-cache -t jimchen2/vercel-bedrock .
 docker build --no-cache -t jimchen2/vercel-bedrock . && docker push jimchen2/vercel-bedrock && docker run -d --restart always --env-file .env -p 3210:3000 jimchen2/vercel-bedrock:latest && docker system prune -af
 ```
 
-## Tauri
-
-```
-npm run build-tauri
-```
 
 ## Previous Example
 
