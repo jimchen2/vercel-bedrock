@@ -7,19 +7,32 @@ interface Message {
   content: string;
 }
 
+
 const truncateMessages = (messages: Message[], maxChars: number): Message[] => {
   let totalChars = 0;
-  return messages
-    .reverse()
-    .filter((msg) => {
-      if (totalChars + msg.content.length <= maxChars) {
-        totalChars += msg.content.length;
-        return true;
-      }
-      return false;
-    })
-    .reverse()
-    .filter((_, i, arr) => (i === 0 ? arr[i].role === "user" : true));
+  let result: Message[] = [];
+
+  // Iterate over the messages from the end to ensure we truncate from the end.
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const msg = messages[i];
+    const messageLength = msg.content.length;
+
+    // If adding this message exceeds maxChars, stop the process.
+    if (totalChars + messageLength > maxChars) {
+      break;
+    }
+
+    // Add the message and update the total character count.
+    totalChars += messageLength;
+    result.unshift(msg);
+  }
+
+  // Ensure that the first message in the result is from the user.
+  while (result.length > 0 && result[0].role !== "user") {
+    result.shift();  // Remove the first message until we find one from the user.
+  }
+
+  return result;
 };
 
 export const handleSubmit = async (
@@ -66,7 +79,7 @@ export const handleSubmit = async (
   setIsLoading(true);
   setError(null);
 
-  const updatedMessages = [...messages, { role: "user", content: input }];
+  let updatedMessages = [...messages, { role: "user", content: input }];
   setMessages(updatedMessages);
   setInput("");
   setCurrentAssistantMessage("");
