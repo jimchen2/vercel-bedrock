@@ -35,6 +35,30 @@ const truncateMessages = (messages: Message[], maxChars: number): Message[] => {
   return result;
 };
 
+const sanitizeMessages = (messages: Message[]): Message[] => {
+  let sanitizedMessages: Message[] = [];
+  let currentRole: string | null = null;
+  let currentContent: string = '';
+
+  for (const msg of messages) {
+    if (msg.role !== currentRole) {
+      if (currentRole) {
+        sanitizedMessages.push({ role: currentRole, content: currentContent.trim() });
+      }
+      currentRole = msg.role;
+      currentContent = msg.content;
+    } else {
+      currentContent += '\n' + msg.content;
+    }
+  }
+
+  if (currentRole) {
+    sanitizedMessages.push({ role: currentRole, content: currentContent.trim() });
+  }
+
+  return sanitizedMessages;
+};
+
 export const handleSubmit = async (
   e: React.FormEvent,
   {
@@ -99,7 +123,7 @@ export const handleSubmit = async (
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        messages: truncateMessages(updatedMessages, maxInputCharacters),
+        messages: sanitizeMessages(truncateMessages(updatedMessages, maxInputCharacters)),
         model: modelConfigs[selectedModel].provider,
         modelName: selectedModel,
         system,
