@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { modelConfigs } from "../../modelConfigs";
+import { modelConfigs } from "./modelConfigs";
 import ConfigPanel from "./ConfigPanel";
 import Chat from "./Chat";
 import { handleSubmit } from "./chatUtils";

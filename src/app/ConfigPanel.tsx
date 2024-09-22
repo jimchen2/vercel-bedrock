@@ -1,6 +1,6 @@
 // ConfigPanel.tsx
 import React, { useState, useEffect } from "react";
-import { modelConfigs } from "../../modelConfigs";
+import { modelConfigs } from "./modelConfigs";
 import { login } from "./auth";
 import Cookies from "js-cookie";
 

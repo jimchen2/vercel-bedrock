@@ -1,5 +1,5 @@
 // src/components/chatUtils.ts
-import { modelConfigs } from "../../modelConfigs";
+import { modelConfigs } from "./modelConfigs";
 import { getApiKey } from "./auth";
 
 interface Message {

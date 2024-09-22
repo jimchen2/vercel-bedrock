@@ -2,7 +2,7 @@
 
 ```
 # configure .env
-docker run -d --restart always --env-file .env -p 3025:3000 jimchen2/vercel-bedrock:latest
+docker run -d --restart always --env-file .env -p 3210:3000 jimchen2/vercel-bedrock:latest
 ```
 
 ## Build

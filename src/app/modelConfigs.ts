@@ -28,4 +28,7 @@ export const modelConfigs = {
   "gpt-4o-mini": {
     provider: "openai",
   },
+  "gpt-4o": {
+    provider: "github",
+  },
 };

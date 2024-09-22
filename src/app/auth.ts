@@ -1,18 +1,17 @@
 // src/components/auth.ts
-import Cookies from 'js-cookie';
 
 export const login = (apiKey: string) => {
-  Cookies.set('apiKey', apiKey, { expires: 90 }); // Store API key for 90 days
+  localStorage.setItem('apiKey', apiKey);
 };
 
 export const logout = () => {
-  Cookies.remove('apiKey');
+  localStorage.removeItem('apiKey');
 };
 
 export const isAuthenticated = () => {
-  return !!Cookies.get('apiKey');
+  return !!localStorage.getItem('apiKey');
 };
 
 export const getApiKey = () => {
-  return Cookies.get('apiKey');
+  return localStorage.getItem('apiKey');
 };
