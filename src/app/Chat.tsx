@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { marked } from "marked";
 import "./markdownStyles.css";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 interface Message {
   role: "user" | "assistant";
@@ -30,7 +30,7 @@ const CopyButton: React.FC<{ text: string }> = ({ text }) => {
   };
 
   return (
-    <button onClick={handleCopy} className="absolute top-2 right-2 bg-gray-200 hover:bg-gray-30 text-gray-700 px-2 py-1 rounded text-sm">
+    <button onClick={handleCopy} className="absolute top-2 right-2 bg-black text-white px-2 py-1 rounded text-sm">
       {copied ? "Copied" : "Copy"}
     </button>
   );
@@ -60,10 +60,11 @@ const Chat: React.FC<ChatProps> = ({ messages, currentAssistantMessage, isLoadin
         copyButtonContainer.dataset.code = block.textContent || "";
         container.appendChild(copyButtonContainer);
 
-        ReactDOM.render(<CopyButton text={block.textContent || ""} />, copyButtonContainer);
+        const root = createRoot(copyButtonContainer);
+        root.render(<CopyButton text={block.textContent || ""} />);
       });
     }
-  }, [messages, currentAssistantMessage]);
+  }, [messages]);
 
   const renderMarkdown = (content: string) => {
     return { __html: marked(content) };

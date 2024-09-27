@@ -144,11 +144,25 @@ export const handleSubmit = async (
     if (!reader) throw new Error("Response body is not readable");
 
     let assistantMessage = "";
+    let retryCount = 0;
+    const maxRetryTime = 10000; // 10 seconds
+    const retryInterval = 1000; // 1 second
+
     while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      assistantMessage += new TextDecoder().decode(value);
-      setCurrentAssistantMessage(assistantMessage);
+      try {
+        const { done, value } = await reader.read();
+        if (done) break;
+        assistantMessage += new TextDecoder().decode(value);
+        setCurrentAssistantMessage(assistantMessage);
+        retryCount = 0; // Reset retry count on successful read
+      } catch (error) {
+        console.error("Error reading stream:", error);
+        if (retryCount * retryInterval >= maxRetryTime) {
+          throw new Error("Max retry time reached. Unable to complete the request.");
+        }
+        retryCount++;
+        await new Promise(resolve => setTimeout(resolve, retryInterval));
+      }
     }
 
     setMessages((prev) => [...prev, { role: "assistant", content: assistantMessage }]);
