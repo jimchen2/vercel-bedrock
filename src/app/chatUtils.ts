@@ -145,8 +145,8 @@ export const handleSubmit = async (
 
     let assistantMessage = "";
     let retryCount = 0;
-    const maxRetryTime = 10000; // 10 seconds
-    const retryInterval = 1000; // 1 second
+    const maxRetryTime = 20000; 
+    const retryInterval = 2000; 
 
     while (true) {
       try {
