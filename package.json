@@ -11,13 +11,13 @@
     "build-tauri": "next build && tauri build"
   },
   "dependencies": {
-    "@ai-sdk/amazon-bedrock": "^0.0.17",
+    "@ai-sdk/amazon-bedrock": "^0.0.29",
     "@ai-sdk/google": "^0.0.43",
     "@ai-sdk/openai": "^0.0.51",
     "ai": "^3.3.9",
     "js-cookie": "^3.0.5",
     "marked": "^14.0.0",
-    "next": "14.2.5",
+    "next": "^14.2.14",
     "next-pwa": "^5.6.0",
     "react": "^18",
     "react-dom": "^18"

@@ -96,7 +96,6 @@ const Chat: React.FC<ChatProps> = ({ messages, currentAssistantMessage, isLoadin
             <div className="inline-block p-2 rounded-lg bg-gray-200 text-black markdown-content" dangerouslySetInnerHTML={renderMarkdown(currentAssistantMessage) as { __html: string }} />
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
       {isLoading && !currentAssistantMessage && <div className="p-4">AI is thinking...</div>}
       {error && <div className="text-red-500 p-4 whitespace-pre-wrap break-words">Error: {error}</div>}
